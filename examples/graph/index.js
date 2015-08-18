@@ -1,4 +1,4 @@
-import { forceGraph } from './../../lib/index';
+import { forceGraph } from 'd3-state-visualizer';
 import d3 from 'd3';
 
 const appState = {
