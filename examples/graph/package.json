@@ -1,5 +1,5 @@
 {
-  "name": "d3-state-visualizer-example",
+  "name": "d3-state-visualizer-graph-example",
   "version": "1.0.0",
   "description": "Visualize your app state as a graph",
   "main": "server.js",

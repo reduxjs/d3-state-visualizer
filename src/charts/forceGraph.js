@@ -2,7 +2,7 @@ import isArray from 'lodash/lang/isArray';
 
 export default function() {
   return function graphChart(d3, DOMNode, props) {
-    const { data, id, size, aspectRatio, charge, linkDistance, maxNodeSize } = props;
+    const { data = [], id = 'd3svg', size = 1000, aspectRatio = 1.0, charge = -1, linkDistance = 1, maxNodeSize = 50 } = props;
     const margin = {
       top: size / 100,
       right: size / 50,
@@ -52,7 +52,7 @@ export default function() {
             const datum = d[d.key];
             if (!isArray(datum)) return 10;
             const radius = 10 + 2 * d[d.key].length;
-            return radius > maxNodeSize ? 10 : radius;
+            return radius > maxNodeSize ? maxNodeSize : radius;
           },
           fill: d => isArray(d[d.key]) ? 'blue' : 'red'
         })
