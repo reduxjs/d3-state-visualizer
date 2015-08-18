@@ -1,4 +1,4 @@
-import { isArray } from 'lodash/lang/isArray';
+import isArray from 'lodash/lang/isArray';
 
 export default function() {
   return function graphChart(d3, DOMNode, props) {
