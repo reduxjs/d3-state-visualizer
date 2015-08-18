@@ -1,0 +1,51 @@
+{
+  "name": "d3-state-visualizer",
+  "version": "0.0.1",
+  "description": "Visualize your app state with a range of reusable charts",
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib dist",
+    "build": "babel src --out-dir lib",
+    "build:umd": "webpack src/index.js dist/d3-state-visualizer.js && NODE_ENV=production webpack src/index.js dist/d3-state-visualizer.min.js",
+    "lint": "eslint src test examples",
+    "test": "NODE_ENV=test mocha",
+    "test:watch": "NODE_ENV=test mocha --watch",
+    "test:cov": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha",
+    "prepublish": "npm run lint && npm run clean && npm run build && npm run build:umd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romseguy/d3-state-visualizer.git"
+  },
+  "keywords": [
+    "d3",
+    "state",
+    "store",
+    "visualization"
+  ],
+  "author": "romseguy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/romseguy/d3-state-visualizer/issues"
+  },
+  "homepage": "https://github.com/romseguy/d3-state-visualizer",
+  "devDependencies": {
+    "babel": "^5.5.8",
+    "babel-core": "^5.6.18",
+    "babel-eslint": "^3.1.15",
+    "babel-loader": "^5.1.4",
+    "eslint": "^0.23",
+    "eslint-config-airbnb": "0.0.6",
+    "eslint-plugin-react": "^2.3.0",
+    "expect": "^1.6.0",
+    "isparta": "^3.0.3",
+    "mocha": "^2.2.5",
+    "rimraf": "^2.3.4",
+    "webpack": "^1.9.6",
+    "webpack-dev-server": "^1.8.2"
+  },
+  "dependencies": {
+    "invariant": "^2.0.0",
+    "lodash": "^3.10.1"
+  }
+}
