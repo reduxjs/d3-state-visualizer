@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import d3 from 'd3';
 
 class Chart extends React.Component {
   static propTypes = {
@@ -16,16 +17,16 @@ class Chart extends React.Component {
   };
 
   constructor(props, context) {
-    super(props, context)
+    super(props, context);
   }
 
   componentDidMount() {
     this.renderChart = this.props.initialize(d3, React.findDOMNode(this), this.props);
-    this.renderChart()
+    this.renderChart();
   }
 
   addNode() {
-    this.renderChart([{ space: -1 }, { invaders: 4 }])
+    this.renderChart([{ space: -1 }, { invaders: 4 }]);
   }
 
   render() {
@@ -33,8 +34,8 @@ class Chart extends React.Component {
       <div>
         <button onClick={this.addNode.bind(this)}>Add nodes</button>
       </div>
-    )
+    );
   }
 }
 
-export default Chart
+export default Chart;

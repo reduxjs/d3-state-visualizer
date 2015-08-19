@@ -1,6 +1,5 @@
-import React from 'react'
-import { forceGraph } from 'd3-state-visualizer'
-import d3 from 'd3';
+import React from 'react';
+import { forceGraph } from 'd3-state-visualizer';
 import Chart from './components/Chart';
 
 const appState = {
