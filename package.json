@@ -1,7 +1,7 @@
 {
-  "name": "d3-state-visualizer-react-graph-example",
+  "name": "d3-state-visualizer-graph-example",
   "version": "1.0.0",
-  "description": "Visualize your app state as a graph and a React wrapper",
+  "description": "Boilerplate script generator and dev environment for gh-pages",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
