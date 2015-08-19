@@ -1,7 +1,5 @@
-import React from 'react'
 import { forceGraph } from 'd3-state-visualizer'
 import d3 from 'd3';
-import Chart from './components/Chart';
 
 const appState = {
   foo: ['1', '2', '3'],
@@ -17,13 +15,20 @@ const nodes = Object.keys(appState).map(key => ({
 
 const initialize = forceGraph();
 
-React.render(
-  <Chart
-    initialize={initialize}
-    data={nodes}
-    id='forceGraphReactExample'
-    charge={-50}
-    linkDistance={80}
-    />
-  , document.getElementById('root')
-);
+const root = document.getElementById('root');
+
+const render = initialize(d3, root, {
+  data: nodes,
+  id: 'forceGraphExample',
+  size: 1000,
+  aspectRatio: 1,
+  charge: -30,
+  linkDistance: 100,
+  maxNodeSize: 50
+});
+
+render();
+
+document.getElementById('addNodesButton').addEventListener('click', () => {
+  render([{space: -1}, {invaders: 4}])
+});
