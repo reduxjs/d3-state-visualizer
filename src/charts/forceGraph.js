@@ -2,7 +2,7 @@ import isArray from 'lodash/lang/isArray';
 
 export default function() {
   return function graphChart(d3, DOMNode, props) {
-    const { data = [], id = 'd3svg', size = 1000, aspectRatio = 1.0, charge = -1, linkDistance = 1, maxNodeSize = 50 } = props;
+    const { data = [], id = 'd3svg', style = '', size = 1000, aspectRatio = 1.0, charge = -1, linkDistance = 1, maxNodeSize = 50 } = props;
     const margin = {
       top: size / 100,
       right: size / 50,
@@ -15,12 +15,19 @@ export default function() {
     const fullHeight = size * aspectRatio;
 
     const root = d3.select(DOMNode);
-    const vis = root.append('svg')
-      .attr('id', id)
-      .attr('preserveAspectRatio', 'xMinYMin slice')
-      .attr('viewBox', `0 0 ${fullWidth} ${fullHeight}`)
+    const vis = root
+      .append('svg')
+      .attr({
+        id,
+        style,
+        width: fullWidth,
+        viewBox: `0 0 ${fullWidth} ${fullHeight}`,
+        preserveAspectRatio: 'xMinYMin slice'
+      })
       .append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+      .attr({
+        transform: `translate(${margin.left}, ${margin.top})`
+      });
 
     let node = vis.selectAll('circle');
 

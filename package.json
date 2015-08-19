@@ -7,7 +7,7 @@
     "clean": "rimraf lib dist",
     "build": "babel src --out-dir lib",
     "build:umd": "webpack src/index.js dist/d3-state-visualizer.js && NODE_ENV=production webpack src/index.js dist/d3-state-visualizer.min.js",
-    "lint": "eslint src test examples",
+    "lint": "eslint src examples",
     "test": "NODE_ENV=test mocha",
     "test:watch": "NODE_ENV=test mocha --watch",
     "test:cov": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha",
