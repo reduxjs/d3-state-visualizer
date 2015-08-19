@@ -1,31 +1,39 @@
-var path = require('path');
+'use strict';
+
 var webpack = require('webpack');
 
+var plugins = [
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  })
+];
+
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        screw_ie8: true,
+        warnings: false
+      }
+    })
+  );
+}
+
 module.exports = {
-  devtool: 'eval',
-  entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
-    './index'
-  ],
-  output: {
-    path: path.join(__dirname, 'static'),
-    filename: 'bundle.js',
-    publicPath: '/static/'
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
-  ],
-  resolve: {
-    extensions: ['', '.js']
-  },
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
-      exclude: /node_modules/,
-      include: __dirname
+      loaders: ['babel-loader'],
+      exclude: /node_modules/
     }]
+  },
+  output: {
+    library: 'd3-state-visualizer-boilerplate',
+    libraryTarget: 'umd'
+  },
+  plugins: plugins,
+  resolve: {
+    extensions: ['', '.js']
   }
 };
