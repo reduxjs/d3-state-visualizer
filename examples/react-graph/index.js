@@ -21,8 +21,12 @@ React.render(
     initialize={initialize}
     data={nodes}
     id='forceGraphReactExample'
+    size={500}
+    aspectRatio={0.5}
     charge={-50}
     linkDistance={80}
+    maxNodeSize={50}
+    style='border: 1px solid black'
     />
   , document.getElementById('root')
 );
