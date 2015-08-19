@@ -18,21 +18,14 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   resolve: {
-    alias: {
-      'd3-state-visualizer': path.join(__dirname, '..', '..', 'src')
-    },
     extensions: ['', '.js']
   },
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
+      loaders: ['babel'],
       exclude: /node_modules/,
       include: __dirname
-    }, {
-      test: /\.js$/,
-      loaders: ['babel'],
-      include: path.join(__dirname, '..', '..', 'src')
     }]
   }
 };
