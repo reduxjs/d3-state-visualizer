@@ -40,7 +40,7 @@ class Chart extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.addNode.bind(this)} style={{ float: 'left'}}>Add nodes</button>
+        <button onClick={this.addNode.bind(this)} style={{ 'float': 'left'}}>Add nodes</button>
       </div>
     );
   }
