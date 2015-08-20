@@ -1,7 +1,7 @@
 import { isArray, isPlainObject } from 'lodash/lang';
 import mapValues from 'lodash/object/mapValues';
 import map2tree from 'map2tree';
-import { toggleChildren, visit, getBranchesDepth } from './utils'
+import { toggleChildren, visit, getBranchesDepth } from './utils';
 
 export default function() {
   return function treeChart(d3, DOMNode, props) {
@@ -59,7 +59,9 @@ export default function() {
 
       data.x0 = height / 2;
       data.y0 = 0;
+       /*eslint-disable*/
       update(data);
+      /*eslint-enable*/
 
       function update(source) {
         // path generator for links
@@ -83,9 +85,9 @@ export default function() {
             transform: d => `translate(${source.y0},${source.x0})`
           })
           .on({
-            click: node => {
+            click: clickedNode => {
               if (d3.event.defaultPrevented) return;
-              update(toggleChildren(node));
+              update(toggleChildren(clickedNode));
             }
           });
 

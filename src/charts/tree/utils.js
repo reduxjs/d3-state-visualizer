@@ -3,7 +3,7 @@ import { isArray, isPlainObject } from 'lodash/lang';
 export function collapseChildren(node) {
   if (node.children) {
     node._children = node.children;
-    node._children.forEach(collapse);
+    node._children.forEach(collapseChildren);
     node.children = null;
   }
 }
@@ -11,7 +11,7 @@ export function collapseChildren(node) {
 export function expandChildren(node) {
   if (node._children) {
     node.children = node._children;
-    node.children.forEach(expand);
+    node.children.forEach(expandChildren);
     node._children = null;
   }
 }
@@ -46,10 +46,8 @@ export function visit(parent, visitFn, childrenFn) {
 
 export function getBranchesDepth(rootNode) {
   let branchesDepth = [1];
-  getChildrenLength(rootNode);
-  return branchesDepth;
 
-  function getChildrenLength(node, level = 0) {
+  const getChildrenLength = function getChildrenLength(node, level = 0) {
     if (!node.children || node.children.length === 0) {
       return 0;
     }
@@ -63,5 +61,8 @@ export function getBranchesDepth(rootNode) {
     node.children.forEach(childNode => {
       getChildrenLength(childNode, level + 1);
     });
-  }
+  };
+
+  getChildrenLength(rootNode);
+  return branchesDepth;
 }

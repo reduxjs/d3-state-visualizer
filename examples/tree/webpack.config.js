@@ -19,8 +19,7 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      'd3-state-visualizer': path.join(__dirname, '..', '..', 'src'),
-      'map2tree': path.join(__dirname, '..', '..', '..', 'map2tree', 'src')
+      'd3-state-visualizer': path.join(__dirname, '..', '..', 'src')
     },
     extensions: ['', '.js']
   },
@@ -34,8 +33,7 @@ module.exports = {
       test: /\.js$/,
       loaders: ['babel'],
       include: [
-        path.join(__dirname, '..', '..', 'src'),
-        path.join(__dirname, '..', '..', '..', 'map2tree', 'src')
+        path.join(__dirname, '..', '..', 'src')
       ]
     }]
   }
