@@ -48,7 +48,7 @@ export default function() {
     }
 
     return function renderChart(nextState = props.state) {
-      const data = map2tree(nextState, 'state');
+      let data = map2tree(nextState, 'state');
       let nodeIndex = 0;
       let maxLabelLength = 0;
 
@@ -57,10 +57,13 @@ export default function() {
           node => node.children && node.children.length > 0 ? node.children : null
       );
 
-      // path generator for links
-      const diagonal = d3.svg.diagonal().projection(d => [d.y, d.x]);
+      data.x0 = height / 2;
+      data.y0 = 0;
+      update(data);
 
       function update(source) {
+        // path generator for links
+        const diagonal = d3.svg.diagonal().projection(d => [d.y, d.x]);
         // set tree dimensions and spacing between branches and nodes
         const tallestBranchLength = Math.max(...getBranchesDepth(data));
 
@@ -80,10 +83,9 @@ export default function() {
             transform: d => `translate(${source.y0},${source.x0})`
           })
           .on({
-            click: d => {
+            click: node => {
               if (d3.event.defaultPrevented) return;
-              d = toggleChildren(d);
-              update(d);
+              update(toggleChildren(node));
             }
           });
 
@@ -194,10 +196,6 @@ export default function() {
           d.y0 = d.y;
         });
       }
-
-      data.x0 = height / 2;
-      data.y0 = 0;
-      update(data)
     };
   };
 }
