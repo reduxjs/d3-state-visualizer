@@ -1,10 +1,12 @@
+import React from 'react';
 import { tree } from 'd3-state-visualizer';
-import d3 from 'd3';
+import ChartContainer from './components/ChartContainer';
+import Chart from './components/Chart';
 
 const appState = {
   todoStore: {
     todos: [
-      { title: 'd3'},
+      { title: 'd3' },
       { title: 'state' },
       { title: 'visualizer' },
       { title: 'tree' }
@@ -23,15 +25,21 @@ const appState = {
 
 const initialize = tree();
 
-const render = initialize(d3, document.getElementById('root'), {
-  state: appState,
-  id: 'treeExample',
-  size: 1000,
-  aspectRatio: 0.5,
-  isSorted: false,
-  widthBetweenBranchCoeff: 2,
-  heightBetweenNodesCoeff: 1.5,
-  style: 'border: 1px solid black'
-});
-
-render();
+React.render(
+  <div>
+    <ChartContainer appState={appState} >
+      <Chart
+        initialize={initialize}
+        state={appState}
+        id='treeExample'
+        size={1000}
+        aspectRatio={0.5}
+        isSorted={true}
+        transitionDuration={0}
+        widthBetweenBranchCoeff={2}
+        heightBetweenNodesCoeff={1.5}
+        />
+    </ChartContainer>
+  </div>
+  , document.getElementById('root')
+);
