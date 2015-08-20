@@ -1,30 +1,30 @@
 import { isArray, isPlainObject } from 'lodash/lang';
 
-export function collapseChildren(d) {
-  if (d.children) {
-    d._children = d.children;
-    d._children.forEach(collapse);
-    d.children = null;
+export function collapseChildren(node) {
+  if (node.children) {
+    node._children = node.children;
+    node._children.forEach(collapse);
+    node.children = null;
   }
 }
 
-export function expandChildren(d) {
-  if (d._children) {
-    d.children = d._children;
-    d.children.forEach(expand);
-    d._children = null;
+export function expandChildren(node) {
+  if (node._children) {
+    node.children = node._children;
+    node.children.forEach(expand);
+    node._children = null;
   }
 }
 
-export function toggleChildren(d) {
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else if (d._children) {
-    d.children = d._children;
-    d._children = null;
+export function toggleChildren(node) {
+  if (node.children) {
+    node._children = node.children;
+    node.children = null;
+  } else if (node._children) {
+    node.children = node._children;
+    node._children = null;
   }
-  return d;
+  return node;
 }
 
 export function visit(parent, visitFn, childrenFn) {
@@ -49,8 +49,8 @@ export function getBranchesDepth(rootNode) {
   getChildrenLength(rootNode);
   return branchesDepth;
 
-  function getChildrenLength(rootNode, level = 0) {
-    if (!rootNode.children || rootNode.children.length === 0) {
+  function getChildrenLength(node, level = 0) {
+    if (!node.children || node.children.length === 0) {
       return 0;
     }
 
@@ -58,9 +58,9 @@ export function getBranchesDepth(rootNode) {
       branchesDepth.push(0);
     }
 
-    branchesDepth[level + 1] += rootNode.children.length;
+    branchesDepth[level + 1] += node.children.length;
 
-    rootNode.children.forEach(childNode => {
+    node.children.forEach(childNode => {
       getChildrenLength(childNode, level + 1);
     });
   }
