@@ -89,19 +89,16 @@ export default function() {
 
         nodeEnter.append('circle')
           .attr({
-            'class': 'nodeCircle',
-            r: 0
-          })
-          .style({
-            fill: d => d._children ? 'lightsteelblue' : '#fff'
+            'class': 'nodeCircle'
           });
 
         nodeEnter.append('text')
           .attr({
             'class': 'nodeText',
-            x: d => d.children || d._children ? -10 : 10,
-            dy: '.35em',
-            'text-anchor': d => d.children || d._children ? 'end' : 'start'
+            dy: '.35em'
+          })
+          .style({
+            'fill-opacity': 0
           })
           .text(d => d.name);
 
@@ -113,29 +110,31 @@ export default function() {
           })
           .text(d => d.name);
 
-        // Change the circle fill depending on whether it has children and is collapsed
+        // change the circle fill depending on whether it has children and is collapsed
         node.select('circle.nodeCircle')
-          .attr('r', 4.5)
-          .style('fill', d => {
-            return d._children ? 'lightsteelblue' : (d.children ? '#fff' : '#ccc');
+          .attr({
+            r: 4.5
+          })
+          .style({
+            fill: d => d._children ? 'lightsteelblue' : (d.children ? '#fff' : '#ccc')
           });
 
-        // Transition nodes to their new position.
+        // transition nodes to their new position
         let nodeUpdate = node.transition()
           .duration(transitionDuration)
-          .attr('transform', d => {
-            return 'translate(' + d.y + ',' + d.x + ')';
+          .attr({
+            transform: d => `translate(${d.y},${d.x})`
           });
 
-        // Fade the text in
+        // fade the text in
         nodeUpdate.select('text')
           .style('fill-opacity', 1);
 
-        // Transition exiting nodes to the parent's new position.
+        // transition exiting nodes to the parent's new position
         let nodeExit = node.exit().transition()
           .duration(transitionDuration)
-          .attr('transform', d => {
-            return 'translate(' + source.y + ',' + source.x + ')';
+          .attr({
+            transform: d => `translate(${source.y},${source.x})`
           })
           .remove();
 
@@ -145,47 +144,51 @@ export default function() {
         nodeExit.select('text')
           .style('fill-opacity', 0);
 
-        // Update the links…
+        // update the links
         let link = vis.selectAll('path.link')
-          .data(links, d => {
-            return d.target.id;
-          });
+          .data(links, d => d.target.id);
 
-        // Enter any new links at the parent's previous position.
+        // enter any new links at the parent's previous position
         link.enter().insert('path', 'g')
-          .attr('class', 'link')
-          .attr('d', d => {
-            let o = {
-              x: source.x0,
-              y: source.y0
-            };
-            return diagonal({
-              source: o,
-              target: o
-            });
+          .attr({
+            'class': 'link',
+            d: d => {
+              let o = {
+                x: source.x0,
+                y: source.y0
+              };
+              return diagonal({
+                source: o,
+                target: o
+              });
+            }
           });
 
-        // Transition links to their new position.
+        // transition links to their new position
         link.transition()
           .duration(transitionDuration)
-          .attr('d', diagonal);
+          .attr({
+            d: diagonal
+          });
 
-        // Transition exiting nodes to the parent's new position.
+        // transition exiting nodes to the parent's new position
         link.exit().transition()
           .duration(transitionDuration)
-          .attr('d', d => {
-            let o = {
-              x: source.x,
-              y: source.y
-            };
-            return diagonal({
-              source: o,
-              target: o
-            });
+          .attr({
+            d: d => {
+              let o = {
+                x: source.x,
+                y: source.y
+              };
+              return diagonal({
+                source: o,
+                target: o
+              });
+            }
           })
           .remove();
 
-        // Stash the old positions for transition.
+        // stash the old positions for transition
         nodes.forEach(d => {
           d.x0 = d.x;
           d.y0 = d.y;
