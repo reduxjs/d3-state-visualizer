@@ -4,6 +4,7 @@
   "description": "Boilerplate script generator and dev environment for gh-pages",
   "main": "server.js",
   "scripts": {
+    "clean": "rimraf lib dist static",
     "start": "node server.js",
     "build": "webpack index.js static/d3-state-visualizer-boilerplate.js && NODE_ENV=production webpack index.js static/d3-state-visualizer-boilerplate.min.js"
   },
