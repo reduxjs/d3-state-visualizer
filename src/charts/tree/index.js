@@ -42,13 +42,14 @@ export default function() {
       });
 
     let tree = d3.layout.tree().size([width, height]);
+    let data;
 
     if (isSorted) {
       tree.sort((a, b) => b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1);
     }
 
     return function renderChart(nextState = props.state) {
-      let data = map2tree(nextState, 'state');
+      data = map2tree(nextState, 'state');
       let nodeIndex = 0;
       let maxLabelLength = 0;
 
