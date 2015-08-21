@@ -44,25 +44,25 @@ export function visit(parent, visitFn, childrenFn) {
   }
 }
 
-export function getBranchesDepth(rootNode) {
-  let branchesDepth = [1];
+export function getNodeGroupByDepthCount(rootNode) {
+  let nodeGroupByDepthCount = [1];
 
-  const getChildrenLength = function getChildrenLength(node, level = 0) {
+  const traverseFrom = function traverseFrom(node, depth = 0) {
     if (!node.children || node.children.length === 0) {
       return 0;
     }
 
-    if (branchesDepth.length <= level + 1) {
-      branchesDepth.push(0);
+    if (nodeGroupByDepthCount.length <= depth + 1) {
+      nodeGroupByDepthCount.push(0);
     }
 
-    branchesDepth[level + 1] += node.children.length;
+    nodeGroupByDepthCount[depth + 1] += node.children.length;
 
     node.children.forEach(childNode => {
-      getChildrenLength(childNode, level + 1);
+      traverseFrom(childNode, depth + 1);
     });
   };
 
-  getChildrenLength(rootNode);
-  return branchesDepth;
+  traverseFrom(rootNode);
+  return nodeGroupByDepthCount;
 }

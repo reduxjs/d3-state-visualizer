@@ -1,7 +1,7 @@
 import { isArray, isPlainObject } from 'lodash/lang';
 import mapValues from 'lodash/object/mapValues';
 import map2tree from 'map2tree';
-import { toggleChildren, visit, getBranchesDepth } from './utils';
+import { toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
 
 export default function() {
   return function treeChart(d3, DOMNode, props) {
@@ -68,14 +68,14 @@ export default function() {
         // path generator for links
         const diagonal = d3.svg.diagonal().projection(d => [d.y, d.x]);
         // set tree dimensions and spacing between branches and nodes
-        const tallestBranchLength = Math.max(...getBranchesDepth(data));
+        const maxNodeCountByLevel = Math.max(...getNodeGroupByDepthCount(data));
 
-        tree = tree.size([(tallestBranchLength + 120) * widthBetweenBranchCoeff, width]);
+        tree = tree.size([maxNodeCountByLevel * 25 * widthBetweenBranchCoeff, width]);
 
         let nodes = tree.nodes(data);
         let links = tree.links(nodes);
 
-        nodes.forEach(node => node.y = node.depth * (maxLabelLength * tallestBranchLength * heightBetweenNodesCoeff));
+        nodes.forEach(node => node.y = node.depth * (maxLabelLength * 7 * heightBetweenNodesCoeff));
 
         // process the node selection
         let node = vis.selectAll('g.node').data(nodes, d => d.id || (d.id = ++nodeIndex));
