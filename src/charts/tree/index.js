@@ -48,8 +48,8 @@ export default function() {
       tree.sort((a, b) => b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1);
     }
 
-    return function renderChart(nextState = props.state) {
-      data = map2tree(nextState, 'state');
+    return function renderChart(nextState = props.state || props.tree) {
+      data = !props.tree ? map2tree(nextState, 'state') : nextState;
       let nodeIndex = 0;
       let maxLabelLength = 0;
 
