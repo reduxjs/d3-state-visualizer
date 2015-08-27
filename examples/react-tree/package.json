@@ -25,7 +25,8 @@
     "d3": "^3.5.6",
     "d3-state-visualizer": "^0.3.0",
     "lodash": "^3.10.1",
-    "react": "^0.13.3"
+    "react": "^0.13.3",
+    "react2tree": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^5.6.18",
