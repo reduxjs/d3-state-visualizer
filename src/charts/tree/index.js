@@ -1,4 +1,4 @@
-import { isArray, isPlainObject } from 'lodash/lang';
+import { isArray, isPlainObject, isEmpty } from 'lodash/lang';
 import mapValues from 'lodash/object/mapValues';
 import map2tree from 'map2tree';
 import { toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
@@ -50,6 +50,11 @@ export default function() {
 
     return function renderChart(nextState = props.state || props.tree) {
       data = !props.tree ? map2tree(nextState, 'state') : nextState;
+
+      if (isEmpty(data) || !data.name) {
+        throw new Error('Cannot render tree chart: empty data.');
+      }
+
       let nodeIndex = 0;
       let maxLabelLength = 0;
 
@@ -60,7 +65,7 @@ export default function() {
 
       data.x0 = height / 2;
       data.y0 = 0;
-       /*eslint-disable*/
+      /*eslint-disable*/
       update(data);
       /*eslint-enable*/
 
