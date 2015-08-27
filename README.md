@@ -45,7 +45,7 @@ render();
 
 ### Plain React
 
-[example](https://github.com/romseguy/d3-state-visualizer/blob/boilerplate/components/Chart.js) implementation.
+[example](https://github.com/romseguy/d3-state-visualizer/tree/master/examples/react-tree) implementation.
 
 ## Roadmap
 
