@@ -1,6 +1,6 @@
 {
   "name": "d3-state-visualizer",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Visualize your app state with a range of reusable charts",
   "main": "lib/index.js",
   "scripts": {
