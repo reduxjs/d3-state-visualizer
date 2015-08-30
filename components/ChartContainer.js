@@ -35,7 +35,7 @@ class ChartContainer extends React.Component {
         <h3>Tweak your application state below...</h3>
         <Textarea
           defaultValue={this.state.prettyAppState}
-          onChange={this.onTextAreaChange.bind(this)}
+          onBlur={this.onTextAreaChange.bind(this)}
           cols={100}
           minRows={5}
           maxRows={40}
