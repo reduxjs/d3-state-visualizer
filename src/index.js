@@ -1,7 +1,7 @@
-import forceGraph from './charts/forceGraph';
 import tree from './charts/tree';
 
-export default {
-  forceGraph,
+export {
   tree
 };
+
+export default tree;
