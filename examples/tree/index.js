@@ -1,5 +1,4 @@
-import { tree } from 'd3-state-visualizer';
-import d3 from 'd3';
+import tree from 'd3-state-visualizer';
 
 const appState = {
   todoStore: {
@@ -21,9 +20,7 @@ const appState = {
   }
 };
 
-const initialize = tree();
-
-const render = initialize(d3, document.getElementById('root'), {
+const render = tree(document.getElementById('root'), {
   state: appState,
   id: 'treeExample',
   size: 1000,

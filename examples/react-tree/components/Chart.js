@@ -1,9 +1,8 @@
 import React from 'react';
-import d3 from 'd3';
+import tree from 'd3-state-visualizer';
 
 class Chart extends React.Component {
   static propTypes = {
-    initialize: React.PropTypes.func.isRequired,
     tree: React.PropTypes.object.isRequired,
     id: React.PropTypes.string,
     size: React.PropTypes.number,
@@ -29,7 +28,7 @@ class Chart extends React.Component {
   }
 
   componentDidMount() {
-    this.renderChart = this.props.initialize(d3, React.findDOMNode(this), this.props);
+    this.renderChart = tree(React.findDOMNode(this), this.props);
     this.renderChart();
   }
 
