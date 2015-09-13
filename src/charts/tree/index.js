@@ -2,7 +2,8 @@ import d3 from 'd3';
 import { isArray, isPlainObject, isEmpty } from 'lodash/lang';
 import mapValues from 'lodash/object/mapValues';
 import map2tree from 'map2tree';
-import { toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
+import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
+import d3tooltip from 'd3-tooltip';
 
 export default function(DOMNode, props) {
   const {
@@ -13,7 +14,15 @@ export default function(DOMNode, props) {
     isSorted = false,
     widthBetweenBranchCoeff = 1,
     heightBetweenNodesCoeff = 1,
-    transitionDuration = 750
+    transitionDuration = 750,
+    tooltipOptions = {
+      left: undefined,
+      right: undefined,
+      offset: {
+        left: 0,
+        top: 0
+      }
+    }
     } = props;
   const margin = {
     top: size / 100,
@@ -90,10 +99,22 @@ export default function(DOMNode, props) {
           'class': 'node',
           transform: d => `translate(${source.y0},${source.x0})`
         })
+        .call(d3tooltip(d3, 'tooltip', tooltipOptions)
+          .text((node, i) => getTooltipString(node, i, tooltipOptions)))
         .on({
           click: clickedNode => {
             if (d3.event.defaultPrevented) return;
             update(toggleChildren(clickedNode));
+          },
+          mouseover: function mouseover(node, i) {
+            d3.select(this).style({
+              fill: 'skyblue'
+            });
+          },
+          mouseout: function mouseout(node, i) {
+            d3.select(this).style({
+              fill: 'black'
+            });
           }
         });
 

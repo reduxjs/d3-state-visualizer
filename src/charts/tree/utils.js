@@ -1,4 +1,6 @@
 import { isArray, isPlainObject } from 'lodash/lang';
+import pretty from 'json-pretty';
+import R from 'ramda';
 
 export function collapseChildren(node) {
   if (node.children) {
@@ -65,4 +67,33 @@ export function getNodeGroupByDepthCount(rootNode) {
 
   traverseFrom(rootNode);
   return nodeGroupByDepthCount;
+}
+
+export function getTooltipString(node, i, tooltipOptions) {
+  const { children, value } = node;
+  console.log(node, children, value)
+
+  const cr2br = R.replace(/\n/g, '<br/>');
+  const spaces2nbsp = R.replace(/\s{2}/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+  const json2html = R.pipe(pretty, cr2br, spaces2nbsp);
+
+  if (isArray(children)) {
+    const toStringMap = {
+      [Array]: 'Array',
+      [Object]: 'Object'
+    };
+    const tuples = R.map(({ name, children, value }) => ({name, children, value}));
+    const setState = R.forEach(({ name, children, value }) => state[name] = value ? toStringMap[value.constructor] || value : 'Array');
+
+    let state = {};
+    setState(tuples(children));
+
+    return json2html(state)
+  }
+
+  if (isPlainObject(value)) {
+    return json2html(value);
+  }
+
+  return value;
 }
