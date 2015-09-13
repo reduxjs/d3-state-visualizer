@@ -70,7 +70,7 @@ export function getNodeGroupByDepthCount(rootNode) {
 }
 
 export function getTooltipString(node, i, { indentationSize = 4 }) {
-  if (!R.is(Object, node)) return;
+  if (!R.is(Object, node)) return '';
 
   const spacer = R.join('&nbsp;');
   const cr2br = R.replace(/\n/g, '<br/>');

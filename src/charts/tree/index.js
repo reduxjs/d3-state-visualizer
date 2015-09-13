@@ -16,6 +16,7 @@ const defaultOptions = {
   transitionDuration: 750,
   state: {error: 'Please provide a state map or a tree structure'},
   rootKeyName: 'state',
+  pushMethod: 'push',
   tooltipOptions: {
     left: undefined,
     right: undefined,
@@ -27,7 +28,6 @@ const defaultOptions = {
 };
 
 export default function(DOMNode, options = {}) {
-
   const {
     id,
     style,
@@ -39,6 +39,7 @@ export default function(DOMNode, options = {}) {
     transitionDuration,
     state,
     rootKeyName,
+    pushMethod,
     tree,
     tooltipOptions
     } = {...defaultOptions, ...options};
@@ -82,7 +83,7 @@ export default function(DOMNode, options = {}) {
   }
 
   return function renderChart(nextState = state || tree) {
-    data = !tree ? map2tree(nextState, {key: rootKeyName}) : nextState;
+    data = !tree ? map2tree(nextState, {key: rootKeyName, pushMethod}) : nextState;
 
     if (isEmpty(data) || !data.name) {
       throw new Error('Cannot render tree chart: empty data.');
@@ -124,18 +125,18 @@ export default function(DOMNode, options = {}) {
           transform: d => `translate(${source.y0},${source.x0})`
         })
         .call(d3tooltip(d3, 'tooltip', {...tooltipOptions, root})
-          .text((node, i) => getTooltipString(node, i, tooltipOptions)))
+          .text((d, i) => getTooltipString(d, i, tooltipOptions)))
         .on({
           click: clickedNode => {
             if (d3.event.defaultPrevented) return;
             update(toggleChildren(clickedNode));
           },
-          mouseover: function mouseover(node, i) {
+          mouseover: function mouseover(d, i) {
             d3.select(this).style({
               fill: 'skyblue'
             });
           },
-          mouseout: function mouseout(node, i) {
+          mouseout: function mouseout(d, i) {
             d3.select(this).style({
               fill: 'black'
             });
