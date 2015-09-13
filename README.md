@@ -9,8 +9,7 @@ Enables real-time visualization of your application state. [Demo](http://romsegu
 ## Usage
 
 ```javascript
-import { tree } from 'd3-state-visualizer';
-import d3 from 'd3';
+import { tree } from 'd3-state-visualizer/charts';
 
 const appState = {
   todoStore: {
@@ -24,18 +23,16 @@ const appState = {
   }
 };
 
-// only 2 function calls and you're done!
-const initialize = tree();
-
-const render = initialize(d3, document.getElementById('root'), {
+const render = tree(document.getElementById('root'), {
   state: appState,
   id: 'treeExample',
   size: 1000,
   aspectRatio: 0.5,
   isSorted: false,
-  widthBetweenBranchCoeff: 2,
-  heightBetweenNodesCoeff: 1.5,
-  style: 'border: 1px solid black'
+  widthBetweenNodesCoeff: 1.5,
+  heightBetweenNodesCoeff: 2,
+  style: {border: '1px solid black'},
+  tooltipOptions: {offset: {left: 30, top: 10}, indentationSize: 2}
 });
 
 render();
@@ -45,10 +42,13 @@ render();
 
 ### Plain React
 
+[TreeChart](https://github.com/romseguy/d3-state-visualizer/blob/master/src/components/TreeChart.js) component.
+
+`import { TreeChart } from 'd3-state-visualizer/components'`
+
 [example](https://github.com/romseguy/d3-state-visualizer/tree/master/examples/react-tree) implementation.
 
 ## Roadmap
 
-* Visualize React component hierarchy.
 * Connect visualizations of the state with the component hierarchy of your application. This would allow to get a bird's eye view of your components' data dependencies.
 * Provide example integrations with [Redux](http://rackt.github.io/redux/index.html) and [Mobservable](http://mweststrate.github.io/mobservable/).
