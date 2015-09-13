@@ -1,7 +1,7 @@
-import tree from './charts/tree';
+import charts from './charts';
+import components from './components';
 
-export {
-  tree
+export default {
+  charts,
+  components
 };
-
-export default tree;

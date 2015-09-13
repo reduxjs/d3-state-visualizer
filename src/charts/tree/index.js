@@ -11,12 +11,13 @@ const defaultOptions = {
   size: 500,
   aspectRatio: 1.0,
   isSorted: false,
-  widthBetweenBranchCoeff: 1,
-  heightBetweenNodesCoeff: 1,
+  heightBetweenNodesCoeff: 2,
+  widthBetweenNodesCoeff: 1,
   transitionDuration: 750,
-  state: {error: 'Please provide a state map or a tree structure'},
+  state: undefined,
   rootKeyName: 'state',
   pushMethod: 'push',
+  tree: undefined,
   tooltipOptions: {
     left: undefined,
     right: undefined,
@@ -34,7 +35,7 @@ export default function(DOMNode, options = {}) {
     size,
     aspectRatio,
     isSorted,
-    widthBetweenBranchCoeff,
+    widthBetweenNodesCoeff,
     heightBetweenNodesCoeff,
     transitionDuration,
     state,
@@ -82,11 +83,11 @@ export default function(DOMNode, options = {}) {
     layout.sort((a, b) => b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1);
   }
 
-  return function renderChart(nextState = state || tree) {
+  return function renderChart(nextState = tree || state) {
     data = !tree ? map2tree(nextState, {key: rootKeyName, pushMethod}) : nextState;
 
     if (isEmpty(data) || !data.name) {
-      throw new Error('Cannot render tree chart: empty data.');
+      data = { name: "error", message: "Please provide a state map or a tree structure"}
     }
 
     let nodeIndex = 0;
@@ -109,12 +110,12 @@ export default function(DOMNode, options = {}) {
       // set tree dimensions and spacing between branches and nodes
       const maxNodeCountByLevel = Math.max(...getNodeGroupByDepthCount(data));
 
-      layout = layout.size([maxNodeCountByLevel * 25 * widthBetweenBranchCoeff, width]);
+      layout = layout.size([maxNodeCountByLevel * 25 * heightBetweenNodesCoeff, width]);
 
       let nodes = layout.nodes(data);
       let links = layout.links(nodes);
 
-      nodes.forEach(node => node.y = node.depth * (maxLabelLength * 7 * heightBetweenNodesCoeff));
+      nodes.forEach(node => node.y = node.depth * (maxLabelLength * 7 * widthBetweenNodesCoeff));
 
       // process the node selection
       let node = vis.selectAll('g.node').data(nodes, d => d.id || (d.id = ++nodeIndex));
