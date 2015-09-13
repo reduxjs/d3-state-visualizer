@@ -5,25 +5,44 @@ import map2tree from 'map2tree';
 import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
 import d3tooltip from 'd3-tooltip';
 
-export default function(DOMNode, props) {
-  const {
-    id = 'd3svg',
-    style = '',
-    size = 1000,
-    aspectRatio = 1.0,
-    isSorted = false,
-    widthBetweenBranchCoeff = 1,
-    heightBetweenNodesCoeff = 1,
-    transitionDuration = 750,
-    tooltipOptions = {
-      left: undefined,
-      right: undefined,
-      offset: {
-        left: 0,
-        top: 0
-      }
+const defaultOptions = {
+  id: 'd3svg',
+  style: {},
+  size: 500,
+  aspectRatio: 1.0,
+  isSorted: false,
+  widthBetweenBranchCoeff: 1,
+  heightBetweenNodesCoeff: 1,
+  transitionDuration: 750,
+  state: {error: 'Please provide a state map or a tree structure'},
+  rootKeyName: 'state',
+  tooltipOptions: {
+    left: undefined,
+    right: undefined,
+    offset: {
+      left: 0,
+      top: 0
     }
-    } = props;
+  }
+};
+
+export default function(DOMNode, options = {}) {
+
+  const {
+    id,
+    style,
+    size,
+    aspectRatio,
+    isSorted,
+    widthBetweenBranchCoeff,
+    heightBetweenNodesCoeff,
+    transitionDuration,
+    state,
+    rootKeyName,
+    tree,
+    tooltipOptions
+    } = {...defaultOptions, ...options};
+
   const margin = {
     top: size / 100,
     right: size / 50,
@@ -35,30 +54,35 @@ export default function(DOMNode, props) {
   const fullWidth = size;
   const fullHeight = size * aspectRatio;
 
+  const attr = {
+    id,
+    viewBox: `0 0 ${fullWidth} ${fullHeight}`,
+    preserveAspectRatio: 'xMinYMin slice'
+  };
+
+  if (!style.width) {
+    attr.width = fullWidth;
+  }
+
   const root = d3.select(DOMNode);
   const vis = root
     .append('svg')
-    .attr({
-      id,
-      style,
-      width: fullWidth,
-      viewBox: `0 0 ${fullWidth} ${fullHeight}`,
-      preserveAspectRatio: 'xMinYMin slice'
-    })
+    .attr(attr)
+    .style(style)
     .append('g')
     .attr({
       transform: `translate(${margin.left}, ${margin.top})`
     });
 
-  let tree = d3.layout.tree().size([width, height]);
+  let layout = d3.layout.tree().size([width, height]);
   let data;
 
   if (isSorted) {
-    tree.sort((a, b) => b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1);
+    layout.sort((a, b) => b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1);
   }
 
-  return function renderChart(nextState = props.state || props.tree) {
-    data = !props.tree ? map2tree(nextState, 'state') : nextState;
+  return function renderChart(nextState = state || tree) {
+    data = !tree ? map2tree(nextState, {key: rootKeyName}) : nextState;
 
     if (isEmpty(data) || !data.name) {
       throw new Error('Cannot render tree chart: empty data.');
@@ -84,10 +108,10 @@ export default function(DOMNode, props) {
       // set tree dimensions and spacing between branches and nodes
       const maxNodeCountByLevel = Math.max(...getNodeGroupByDepthCount(data));
 
-      tree = tree.size([maxNodeCountByLevel * 25 * widthBetweenBranchCoeff, width]);
+      layout = layout.size([maxNodeCountByLevel * 25 * widthBetweenBranchCoeff, width]);
 
-      let nodes = tree.nodes(data);
-      let links = tree.links(nodes);
+      let nodes = layout.nodes(data);
+      let links = layout.links(nodes);
 
       nodes.forEach(node => node.y = node.depth * (maxLabelLength * 7 * heightBetweenNodesCoeff));
 
@@ -99,7 +123,7 @@ export default function(DOMNode, props) {
           'class': 'node',
           transform: d => `translate(${source.y0},${source.x0})`
         })
-        .call(d3tooltip(d3, 'tooltip', tooltipOptions)
+        .call(d3tooltip(d3, 'tooltip', {...tooltipOptions, root})
           .text((node, i) => getTooltipString(node, i, tooltipOptions)))
         .on({
           click: clickedNode => {
