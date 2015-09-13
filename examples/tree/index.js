@@ -1,4 +1,4 @@
-import tree from 'd3-state-visualizer';
+import { tree } from 'd3-state-visualizer/charts';
 
 const appState = {
   todoStore: {
@@ -26,9 +26,10 @@ const render = tree(document.getElementById('root'), {
   size: 1000,
   aspectRatio: 0.5,
   isSorted: false,
-  widthBetweenBranchCoeff: 2,
-  heightBetweenNodesCoeff: 1.5,
-  style: 'border: 1px solid black'
+  widthBetweenNodesCoeff: 1.5,
+  heightBetweenNodesCoeff: 2,
+  style: {border: '1px solid black'},
+  tooltipOptions: {offset: {left: 30, top: 10}, indentationSize: 2}
 });
 
 render();
