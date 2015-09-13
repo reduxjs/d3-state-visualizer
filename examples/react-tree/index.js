@@ -1,7 +1,7 @@
 import React from 'react';
 import react2tree from 'react2tree';
 import App from './components/App';
-import TreeChart from './components/TreeChart'
+import TreeChart from './components/TreeChart';
 
 const hierarchy = react2tree(React.render(<App/>, document.createElement('hierarchy')));
 
@@ -16,7 +16,7 @@ React.render(
       widthBetweenNodesCoeff={1.5}
       heightBetweenNodesCoeff={2}
       style={{border: '1px solid black'}}
-      tooltipOptions={{offset: {left: 30, top: 10} }}
+      tooltipOptions={{offset: {left: 30, top: 10}}}
       />
   </div>
   , document.getElementById('root')

@@ -1,6 +1,5 @@
 import d3 from 'd3';
-import { isArray, isPlainObject, isEmpty } from 'lodash/lang';
-import mapValues from 'lodash/object/mapValues';
+import { isEmpty } from 'ramda';
 import map2tree from 'map2tree';
 import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
 import d3tooltip from 'd3-tooltip';
@@ -87,7 +86,7 @@ export default function(DOMNode, options = {}) {
     data = !tree ? map2tree(nextState, {key: rootKeyName, pushMethod}) : nextState;
 
     if (isEmpty(data) || !data.name) {
-      data = { name: "error", message: "Please provide a state map or a tree structure"}
+      data = { name: 'error', message: 'Please provide a state map or a tree structure'};
     }
 
     let nodeIndex = 0;
