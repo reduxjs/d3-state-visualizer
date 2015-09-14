@@ -76,8 +76,8 @@ export function getTooltipString(node, i, { indentationSize = 4 }) {
   const spaces2nbsp = replace(/\s{2}/g, spacer(new Array(indentationSize)));
   const json2html = pipe(pretty, cr2br, spaces2nbsp);
 
-  const { children } = node;
-  const tuple = omit(['parent', 'children', 'depth', 'id', 'x', 'x0', 'y', 'y0'], node);
+  const children = node.children || node._children;
+  const tuple = omit(['parent', 'children', '_children', 'depth', 'id', 'x', 'x0', 'y', 'y0'], node);
 
   if (children) {
     tuple.childrenCount = children.length;
