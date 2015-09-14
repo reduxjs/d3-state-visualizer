@@ -1,4 +1,4 @@
-import tree from './tree';
+import tree from './tree/tree';
 
 export default {
   tree
