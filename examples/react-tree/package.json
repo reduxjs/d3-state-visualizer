@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/romseguy/d3-state-visualizer",
   "dependencies": {
-    "d3-state-visualizer": "^0.3.0",
+    "d3-state-visualizer": "^0.4.2",
     "react": "^0.13.3",
     "react2tree": "^1.0.0"
   },

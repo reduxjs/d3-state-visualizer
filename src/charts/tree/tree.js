@@ -2,7 +2,7 @@ import d3 from 'd3';
 import { isEmpty } from 'ramda';
 import map2tree from 'map2tree';
 import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
-import d3tooltip from 'd3-tooltip';
+import d3tooltip from 'd3tooltip';
 
 const defaultOptions = {
   id: 'd3svg',
