@@ -40,11 +40,13 @@ render();
 
 ## Bindings
 
+View components are now provided along with the charts, but it makes sense to have different repositories if this project gets some attention.
+
 ### Plain React
 
 [TreeChart](https://github.com/romseguy/d3-state-visualizer/blob/master/src/components/TreeChart.js) component.
 
-```
+```javascript
 import { components } from 'd3-state-visualizer'
 
 const { TreeChart } = components;
@@ -74,6 +76,7 @@ class MyApp extends React.Component {
 
 ## Roadmap
 
-* Provide more components such as `DockedTreeChart`.
-* Connect visualizations of the state with the component hierarchy of your application. This would allow to get a bird's eye view of your components' data dependencies.
-* Provide example integration with [Mobservable](http://mweststrate.github.io/mobservable/).
+* Provide more components such as `DockedTreeChart`
+* Search box to filter the tree down
+* Panning/zooming features for large state trees
+* Threshold for large arrays so only a single node is displayed instead of all the children. That single node would be exclude from searching until selected.
