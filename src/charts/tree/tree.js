@@ -52,7 +52,8 @@ const defaultOptions = {
       top: 0
     },
     style: undefined
-  }
+  },
+  onClickText: () => {}
 };
 
 export default function(DOMNode, options = {}) {
@@ -70,7 +71,8 @@ export default function(DOMNode, options = {}) {
     rootKeyName,
     pushMethod,
     tree,
-    tooltipOptions
+    tooltipOptions,
+    onClickText
     } = deepmerge(defaultOptions, options);
 
   const width = size - margin.left - margin.right;
@@ -152,10 +154,6 @@ export default function(DOMNode, options = {}) {
           cursor: 'pointer'
         })
         .on({
-          click: clickedNode => {
-            if (d3.event.defaultPrevented) return;
-            update(toggleChildren(clickedNode));
-          },
           mouseover: function mouseover(d, i) {
             d3.select(this).style({
               fill: style.text.colors.hover
@@ -178,6 +176,12 @@ export default function(DOMNode, options = {}) {
       nodeEnter.append('circle')
         .attr({
           'class': 'nodeCircle'
+        })
+        .on({
+          click: clickedNode => {
+            if (d3.event.defaultPrevented) return;
+            update(toggleChildren(clickedNode));
+          }
         });
 
       nodeEnter.append('text')
@@ -188,7 +192,10 @@ export default function(DOMNode, options = {}) {
         .style({
           'fill-opacity': 0
         })
-        .text(d => d.name);
+        .text(d => d.name)
+        .on({
+          click: onClickText
+        });
 
       // update the text to reflect whether node has children or not
       node.select('text')
