@@ -1,14 +1,40 @@
 import d3 from 'd3';
 import { isEmpty } from 'ramda';
 import map2tree from 'map2tree';
+import deepmerge from 'deepmerge';
 import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } from './utils';
 import d3tooltip from 'd3tooltip';
 
 const defaultOptions = {
   id: 'd3svg',
-  style: {},
+  style: {
+    node: {
+      colors: {
+        'default': '#ccc',
+        collapsed: 'lightsteelblue',
+        parent: 'white'
+      },
+      radius: 5
+    },
+    text: {
+      colors: {
+        'default': 'black',
+        hover: 'skyblue'
+      }
+    },
+    link: {
+      stroke: '#000',
+      fill: 'none'
+    }
+  },
   size: 500,
   aspectRatio: 1.0,
+  margin: {
+    top: 10,
+    right: 10,
+    bottom: 10,
+    left: 50
+  },
   isSorted: false,
   heightBetweenNodesCoeff: 2,
   widthBetweenNodesCoeff: 1,
@@ -18,12 +44,14 @@ const defaultOptions = {
   pushMethod: 'push',
   tree: undefined,
   tooltipOptions: {
+    disabled: false,
     left: undefined,
     right: undefined,
     offset: {
       left: 0,
       top: 0
-    }
+    },
+    style: undefined
   }
 };
 
@@ -33,6 +61,7 @@ export default function(DOMNode, options = {}) {
     style,
     size,
     aspectRatio,
+    margin,
     isSorted,
     widthBetweenNodesCoeff,
     heightBetweenNodesCoeff,
@@ -42,14 +71,8 @@ export default function(DOMNode, options = {}) {
     pushMethod,
     tree,
     tooltipOptions
-    } = {...defaultOptions, ...options};
+    } = deepmerge(defaultOptions, options);
 
-  const margin = {
-    top: size / 100,
-    right: size / 50,
-    bottom: size / 100,
-    left: 40
-  };
   const width = size - margin.left - margin.right;
   const height = size * aspectRatio - margin.top - margin.bottom;
   const fullWidth = size;
@@ -72,7 +95,7 @@ export default function(DOMNode, options = {}) {
     .style(style)
     .append('g')
     .attr({
-      transform: `translate(${margin.left}, ${margin.top})`
+      transform: `translate(${margin.left + style.node.radius}, ${margin.top})`
     });
 
   let layout = d3.layout.tree().size([width, height]);
@@ -124,8 +147,10 @@ export default function(DOMNode, options = {}) {
           'class': 'node',
           transform: d => `translate(${source.y0},${source.x0})`
         })
-        .call(d3tooltip(d3, 'tooltip', {...tooltipOptions, root})
-          .text((d, i) => getTooltipString(d, i, tooltipOptions)))
+        .style({
+          fill: style.text.colors.default,
+          cursor: 'pointer'
+        })
         .on({
           click: clickedNode => {
             if (d3.event.defaultPrevented) return;
@@ -133,15 +158,22 @@ export default function(DOMNode, options = {}) {
           },
           mouseover: function mouseover(d, i) {
             d3.select(this).style({
-              fill: 'skyblue'
+              fill: style.text.colors.hover
             });
           },
           mouseout: function mouseout(d, i) {
             d3.select(this).style({
-              fill: 'black'
+              fill: style.text.colors.default
             });
           }
         });
+
+      if (!tooltipOptions.disabled) {
+        nodeEnter.call(d3tooltip(d3, 'tooltip', {...tooltipOptions, root})
+          .text((d, i) => getTooltipString(d, i, tooltipOptions))
+          .style(tooltipOptions.style)
+        );
+      }
 
       nodeEnter.append('circle')
         .attr({
@@ -161,7 +193,7 @@ export default function(DOMNode, options = {}) {
       // update the text to reflect whether node has children or not
       node.select('text')
         .attr({
-          x: d => d.children || d._children ? -10 : 10,
+          x: d => d.children || d._children ? -(style.node.radius + 10) : style.node.radius + 10,
           'text-anchor': d => d.children || d._children ? 'end' : 'start'
         })
         .text(d => d.name);
@@ -169,10 +201,12 @@ export default function(DOMNode, options = {}) {
       // change the circle fill depending on whether it has children and is collapsed
       node.select('circle.nodeCircle')
         .attr({
-          r: 4.5
+          r: style.node.radius
         })
         .style({
-          fill: d => d._children ? 'lightsteelblue' : (d.children ? '#fff' : '#ccc')
+          stroke: 'black',
+          'stroke-width': '1.5px',
+          fill: d => d._children ? style.node.colors.collapsed : (d.children ? style.node.colors.parent : style.node.colors.default)
         });
 
       // transition nodes to their new position
@@ -218,7 +252,8 @@ export default function(DOMNode, options = {}) {
               target: o
             });
           }
-        });
+        })
+        .style(style.link);
 
       // transition links to their new position
       link.transition()
