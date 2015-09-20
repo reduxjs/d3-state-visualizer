@@ -82,12 +82,15 @@ export default function(DOMNode, options = {}) {
 
   const attr = {
     id,
-    viewBox: `0 0 ${fullWidth} ${fullHeight}`,
     preserveAspectRatio: 'xMinYMin slice'
   };
 
   if (!style.width) {
     attr.width = fullWidth;
+  }
+
+  if (!style.width || !style.height) {
+    attr.viewBox = `0 0 ${fullWidth} ${fullHeight}`;
   }
 
   const root = d3.select(DOMNode);
