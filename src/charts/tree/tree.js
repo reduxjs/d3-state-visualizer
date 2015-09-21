@@ -98,6 +98,10 @@ export default function(DOMNode, options = {}) {
     .append('svg')
     .attr(attr)
     .style(style)
+    .call(d3.behavior.zoom().scaleExtent([0.1, 3]).on('zoom', () => {
+      const { translate, scale } = d3.event;
+      vis.attr('transform', `translate(${translate})scale(${scale})`);
+    }))
     .append('g')
     .attr({
       transform: `translate(${margin.left + style.node.radius}, ${margin.top})`
