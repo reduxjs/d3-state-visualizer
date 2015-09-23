@@ -1,6 +1,10 @@
 d3-state-visualizer
 ===================
-Enables real-time visualization of your application state. [Demo](http://romseguy.github.io/d3-state-visualizer)
+Enables real-time visualization of your application state.
+
+[Demo](http://romseguy.github.io/d3-state-visualizer)
+
+[Demo source code](https://github.com/romseguy/d3-state-visualizer/tree/boilerplate)
 
 ## Installation
 
@@ -108,5 +112,4 @@ class MyApp extends React.Component {
 
 * Provide more components such as `DockedTreeChart`
 * Search box to filter the tree down
-* Panning/zooming features for large state trees
 * Threshold for large arrays so only a single node is displayed instead of all the children. That single node would be exclude from searching until selected.
