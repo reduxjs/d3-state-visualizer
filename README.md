@@ -74,7 +74,9 @@ More to come...
 
 ## Bindings
 
-View components are now provided along with the charts, but it makes sense to have different repositories if this project gets some attention.
+### Redux Dev tools
+
+See this [repository](https://github.com/romseguy/redux-devtools-chart-monitor).
 
 ### Plain React
 

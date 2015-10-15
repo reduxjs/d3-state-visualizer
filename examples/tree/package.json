@@ -1,6 +1,6 @@
 {
   "name": "d3-state-visualizer-tree-example",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Visualize your app state as a tree",
   "main": "server.js",
   "scripts": {

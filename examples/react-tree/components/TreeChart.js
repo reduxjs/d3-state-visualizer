@@ -1,31 +1,56 @@
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { tree } from 'd3-state-visualizer/charts';
 
 class TreeChart extends Component {
   static propTypes = {
     state: PropTypes.object,
-    rootKeyName: React.PropTypes.string,
-    pushMethod: React.PropTypes.string,
+    rootKeyName: PropTypes.string,
+    pushMethod: PropTypes.string,
     tree: PropTypes.shape({
       name: PropTypes.string,
       children: PropTypes.array
     }),
     id: PropTypes.string,
-    style: PropTypes.object,
+    style: PropTypes.shape({
+      node: PropTypes.shape({
+        colors: PropTypes.shape({
+          'default': PropTypes.string,
+          parent: PropTypes.string,
+          collapsed: PropTypes.string
+        }),
+        radius: PropTypes.number
+      }),
+      text: PropTypes.shape({
+        colors: PropTypes.shape({
+          'default': PropTypes.string,
+          hover: PropTypes.string
+        })
+      }),
+      link: PropTypes.object
+    }),
     size: PropTypes.number,
     aspectRatio: PropTypes.number,
-    isSorted: React.PropTypes.bool,
-    heightBetweenNodesCoeff: React.PropTypes.number,
-    widthBetweenNodesCoeff: React.PropTypes.number,
-    transitionDuration: React.PropTypes.number,
+    margin: PropTypes.shape({
+      top: PropTypes.number,
+      right: PropTypes.number,
+      bottom: PropTypes.number,
+      left: PropTypes.number
+    }),
+    isSorted: PropTypes.bool,
+    heightBetweenNodesCoeff: PropTypes.number,
+    widthBetweenNodesCoeff: PropTypes.number,
+    transitionDuration: PropTypes.number,
     tooltipOptions: PropTypes.shape({
+      disabled: PropTypes.bool,
       left: PropTypes.number,
       top: PropTypes.number,
       offset: PropTypes.shape({
         left: PropTypes.number,
         top: PropTypes.number
       }),
-      indentationSize: PropTypes.number
+      indentationSize: PropTypes.number,
+      style: PropTypes.object
     })
   };
 
@@ -34,7 +59,7 @@ class TreeChart extends Component {
   }
 
   componentDidMount() {
-    this.renderChart = tree(React.findDOMNode(this), this.props);
+    this.renderChart = tree(findDOMNode(this), this.props);
     this.renderChart();
   }
 

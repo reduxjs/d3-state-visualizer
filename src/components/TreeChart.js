@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { tree } from './../charts';
 
 class TreeChart extends Component {
@@ -58,7 +59,7 @@ class TreeChart extends Component {
   }
 
   componentDidMount() {
-    this.renderChart = tree(React.findDOMNode(this), this.props);
+    this.renderChart = tree(findDOMNode(this), this.props);
     this.renderChart();
   }
 

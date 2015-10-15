@@ -1,11 +1,12 @@
 import React from 'react';
+import { render } from 'react-dom';
 import react2tree from 'react2tree';
 import App from './components/App';
 import TreeChart from './components/TreeChart';
 
-const hierarchy = react2tree(React.render(<App/>, document.createElement('hierarchy')));
+const hierarchy = react2tree(render(<App/>, document.createElement('hierarchy')));
 
-React.render(
+render(
   <div>
     <TreeChart
       tree={hierarchy}

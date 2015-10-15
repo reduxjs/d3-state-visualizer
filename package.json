@@ -8,9 +8,6 @@
     "build": "babel src --out-dir lib",
     "build:umd": "webpack src/index.js dist/d3-state-visualizer.js && NODE_ENV=production webpack src/index.js dist/d3-state-visualizer.min.js",
     "lint": "eslint src examples",
-    "test": "NODE_ENV=test mocha",
-    "test:watch": "NODE_ENV=test mocha --watch",
-    "test:cov": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha",
     "prepublish": "npm run lint && npm run clean && npm run build && npm run build:umd"
   },
   "repository": {
@@ -37,9 +34,6 @@
     "eslint": "^0.23",
     "eslint-config-airbnb": "0.0.6",
     "eslint-plugin-react": "^2.3.0",
-    "expect": "^1.6.0",
-    "isparta": "^3.0.3",
-    "mocha": "^2.2.5",
     "rimraf": "^2.3.4",
     "webpack": "^1.9.6",
     "webpack-dev-server": "^1.8.2"
@@ -49,8 +43,9 @@
     "d3tooltip": "^1.0.2",
     "deepmerge": "^0.2.10",
     "json-pretty": "0.0.1",
-    "map2tree": "^1.1.2",
+    "map2tree": "^1.2.0",
     "ramda": "^0.17.1",
-    "react": "^0.13.3"
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   }
 }
