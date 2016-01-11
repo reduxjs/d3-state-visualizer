@@ -13,7 +13,7 @@ Enables real-time visualization of your application state.
 ## Usage
 
 ```javascript
-import { charts } from 'd3-state-visualizer';
+import { tree } from 'd3-state-visualizer';
 
 const appState = {
   todoStore: {
@@ -27,7 +27,7 @@ const appState = {
   }
 };
 
-const render = charts.tree(document.getElementById('root'), {
+const render = tree(document.getElementById('root'), {
   state: appState,
   id: 'treeExample',
   size: 1000,
@@ -78,40 +78,10 @@ More to come...
 
 See this [repository](https://github.com/romseguy/redux-devtools-chart-monitor).
 
-### Plain React
-
-[TreeChart](https://github.com/romseguy/d3-state-visualizer/blob/master/src/components/TreeChart.js) component.
-
-```javascript
-import { components } from 'd3-state-visualizer'
-
-const { TreeChart } = components;
-const options = {
-  id: 'chartSvgId',
-  size: 1000,
-  aspectRation: 0.5,
-  heightBetweenNodesCoeff: 1,
-  widthBetweenNodesCoeff: 1.5,
-  style: {float: 'left'},
-  tooltipOptions: {left: 0, top: 0, indentationSize: 2}
-};
-
-class MyApp extends React.Component {
-  render() {
-    return (
-      <div>
-        <TreeChart state={this.props.state} ...options />
-        <Container/>
-      </div>
-    );
-  }
-}
-```
+### React
 
 [example](https://github.com/romseguy/d3-state-visualizer/tree/master/examples/react-tree) implementation.
 
 ## Roadmap
 
-* Provide more components such as `DockedTreeChart`
-* Search box to filter the tree down
 * Threshold for large arrays so only a single node is displayed instead of all the children. That single node would be exclude from searching until selected.
