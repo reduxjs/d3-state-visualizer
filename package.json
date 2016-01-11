@@ -50,8 +50,6 @@
     "deepmerge": "^0.2.10",
     "json-pretty": "0.0.1",
     "map2tree": "^1.3.0",
-    "ramda": "^0.17.1",
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "ramda": "^0.17.1"
   }
 }
