@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import react2tree from 'react2tree';
 import App from './components/App';
-import { TreeChart } from 'd3-state-visualizer';
+import TreeChart from './components/TreeChart';
 
 const hierarchy = react2tree(render(<App/>, document.createElement('hierarchy')));
 
