@@ -6,6 +6,10 @@ import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } fro
 import d3tooltip from 'd3tooltip';
 
 const defaultOptions = {
+  state: undefined,
+  rootKeyName: 'state',
+  pushMethod: 'push',
+  tree: undefined,
   id: 'd3svg',
   style: {
     node: {
@@ -39,10 +43,7 @@ const defaultOptions = {
   heightBetweenNodesCoeff: 2,
   widthBetweenNodesCoeff: 1,
   transitionDuration: 750,
-  state: undefined,
-  rootKeyName: 'state',
-  pushMethod: 'push',
-  tree: undefined,
+  onClickText: () => {},
   tooltipOptions: {
     disabled: false,
     left: undefined,
@@ -52,8 +53,7 @@ const defaultOptions = {
       top: 0
     },
     style: undefined
-  },
-  onClickText: () => {}
+  }
 };
 
 export default function(DOMNode, options = {}) {

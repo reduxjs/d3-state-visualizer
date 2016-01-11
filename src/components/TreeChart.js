@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-import { tree } from './../charts';
+import { tree } from '../charts';
 
 class TreeChart extends Component {
   static propTypes = {
     state: PropTypes.object,
     rootKeyName: PropTypes.string,
-    pushMethod: PropTypes.string,
+    pushMethod: PropTypes.oneOf(['push', 'unshift']),
     tree: PropTypes.shape({
       name: PropTypes.string,
       children: PropTypes.array
@@ -41,6 +41,7 @@ class TreeChart extends Component {
     heightBetweenNodesCoeff: PropTypes.number,
     widthBetweenNodesCoeff: PropTypes.number,
     transitionDuration: PropTypes.number,
+    onClickText: PropTypes.func,
     tooltipOptions: PropTypes.shape({
       disabled: PropTypes.bool,
       left: PropTypes.number,

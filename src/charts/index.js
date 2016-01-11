@@ -1,5 +1,1 @@
-import tree from './tree/tree';
-
-export default {
-  tree
-};
+export tree from './tree/tree';

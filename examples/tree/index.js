@@ -1,4 +1,4 @@
-import { tree } from 'd3-state-visualizer/charts';
+import { tree } from 'd3-state-visualizer';
 
 const appState = {
   todoStore: {

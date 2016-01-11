@@ -1,5 +1,1 @@
-import TreeChart from './TreeChart';
-
-export default {
-  TreeChart
-};
+export TreeChart from './TreeChart';
