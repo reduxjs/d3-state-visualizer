@@ -4,8 +4,6 @@ Enables real-time visualization of your application state.
 
 [Demo](http://romseguy.github.io/d3-state-visualizer)
 
-[Demo source code](https://github.com/romseguy/d3-state-visualizer/tree/boilerplate)
-
 ## Installation
 
 `npm install d3-state-visualizer`
