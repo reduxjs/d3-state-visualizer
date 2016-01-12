@@ -1,5 +1,6 @@
 import pretty from 'json-pretty';
 import { is, join, pipe, omit, replace } from 'ramda';
+import sortAndSerialize from './sortAndSerialize';
 
 export function collapseChildren(node) {
   if (node.children) {
@@ -74,7 +75,7 @@ export function getTooltipString(node, i, { indentationSize = 4 }) {
   const spacer = join('&nbsp;&nbsp;');
   const cr2br = replace(/\n/g, '<br/>');
   const spaces2nbsp = replace(/\s{2}/g, spacer(new Array(indentationSize)));
-  const json2html = pipe(pretty, cr2br, spaces2nbsp);
+  const json2html = pipe(sortAndSerialize, cr2br, spaces2nbsp);
 
   const children = node.children || node._children;
   const tuple = omit(['parent', 'children', '_children', 'depth', 'id', 'x', 'x0', 'y', 'y0'], node);

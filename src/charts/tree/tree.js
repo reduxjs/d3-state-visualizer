@@ -187,7 +187,9 @@ export default function(DOMNode, options = {}) {
         .on({
           click: clickedNode => {
             if (d3.event.defaultPrevented) return;
-            update(toggleChildren(clickedNode));
+            const node = toggleChildren(clickedNode)
+            console.log('node', node)
+            update(node);
           }
         });
 
