@@ -10,6 +10,7 @@
     "react/react-in-jsx-scope": 2,
     "no-unused-vars": 1,
     "no-nested-ternary": 1,
+    "semi": 0,
     "block-scoped-var": 0,
     "padded-blocks": 0
   },

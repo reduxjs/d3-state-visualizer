@@ -1,33 +1,33 @@
-import { is } from 'ramda';
-import isPlainObject from 'is-plain-object';
+import { is } from 'ramda'
+import isPlainObject from 'is-plain-object'
 
-var isSerializable = function(obj) {
+function isSerializable(obj) {
   if (obj === undefined || obj === null || is(Boolean, obj) || is(Number, obj) || is(String, obj)) {
-    return true;
+    return true
   }
 
   if (!isPlainObject(obj) && !is(Array, obj)) {
-    return false;
+    return false
   }
 
-  for (var key in obj) {
+  for (const key in obj) {
     if (!isSerializable(obj[key])) {
-      return false;
+      return false
     }
   }
 
-  return true;
-};
+  return true
+}
 
 function sortObject(obj, strict) {
   if (obj instanceof Array) {
-    let ary;
+    let ary
     if (strict) {
-      ary = obj.sort();
+      ary = obj.sort()
     } else {
-      ary = obj;
+      ary = obj
     }
-    return ary;
+    return ary
   }
 
   if (obj && typeof obj === 'object') {
@@ -35,14 +35,14 @@ function sortObject(obj, strict) {
       return {error: 'not serializable'}
     }
 
-    const tObj = {};
-    Object.keys(obj).sort().forEach(key => tObj[key] = sortObject(obj[key]));
-    return tObj;
+    const tObj = {}
+    Object.keys(obj).sort().forEach(key => tObj[key] = sortObject(obj[key]))
+    return tObj
   }
 
-  return obj;
+  return obj
 }
 
 export default function sortAndSerialize(obj) {
-  return JSON.stringify(sortObject(obj, true), undefined, 2);
+  return JSON.stringify(sortObject(obj, true), undefined, 2)
 }
