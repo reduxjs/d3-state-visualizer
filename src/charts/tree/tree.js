@@ -33,6 +33,7 @@ const defaultOptions = {
   },
   size: 500,
   aspectRatio: 1.0,
+  initialZoom: 1,
   margin: {
     top: 10,
     right: 10,
@@ -62,6 +63,7 @@ export default function(DOMNode, options = {}) {
     style,
     size,
     aspectRatio,
+    initialZoom,
     margin,
     isSorted,
     widthBetweenNodesCoeff,
@@ -94,17 +96,20 @@ export default function(DOMNode, options = {}) {
   }
 
   const root = d3.select(DOMNode)
+  const zoom = d3.behavior.zoom()
+    .scaleExtent([0.1, 3])
+    .scale(initialZoom)
   const vis = root
     .append('svg')
     .attr(attr)
     .style(style)
-    .call(d3.behavior.zoom().scaleExtent([0.1, 3]).on('zoom', () => {
+    .call(zoom.on('zoom', () => {
       const { translate, scale } = d3.event
       vis.attr('transform', `translate(${translate})scale(${scale})`)
     }))
     .append('g')
     .attr({
-      transform: `translate(${margin.left + style.node.radius}, ${margin.top})`
+      transform: `translate(${margin.left + style.node.radius}, ${margin.top}) scale(${initialZoom})`
     })
 
   let layout = d3.layout.tree().size([width, height])
