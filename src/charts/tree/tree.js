@@ -102,7 +102,7 @@ export default function(DOMNode, options = {}) {
   const vis = root
     .append('svg')
     .attr(attr)
-    .style(style)
+    .style({cursor: '-webkit-grab', ...style})
     .call(zoom.on('zoom', () => {
       const { translate, scale } = d3.event
       vis.attr('transform', `translate(${translate})scale(${scale})`)
