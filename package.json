@@ -57,7 +57,7 @@
     "deepmerge": "^0.2.10",
     "is-plain-object": "2.0.1",
     "json-pretty": "0.0.1",
-    "map2tree": "^1.3.0",
+    "map2tree": "^1.4.0",
     "ramda": "^0.17.1"
   }
 }
