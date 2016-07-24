@@ -1,5 +1,6 @@
 import { is } from 'ramda'
 import isPlainObject from 'is-plain-object'
+import fclone from 'fclone';
 
 function isSerializable(obj) {
   if (obj === undefined || obj === null || is(Boolean, obj) || is(Number, obj) || is(String, obj)) {
@@ -44,5 +45,5 @@ function sortObject(obj, strict) {
 }
 
 export default function sortAndSerialize(obj) {
-  return JSON.stringify(sortObject(obj, true), undefined, 2)
+  return JSON.stringify(sortObject(fclone(obj), true), undefined, 2)
 }
