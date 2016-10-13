@@ -240,6 +240,9 @@ export default function(DOMNode, options = {}) {
       // fade the text in
       nodeUpdate.select('text')
         .style('fill-opacity', 1)
+      
+      // restore the circle
+      nodeUpdate.select('circle').attr('r', 7)
 
       // blink updated nodes
       nodeUpdate.filter(function(d) {
