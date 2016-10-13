@@ -154,7 +154,9 @@ export default function(DOMNode, options = {}) {
       nodes.forEach(node => node.y = node.depth * (maxLabelLength * 7 * widthBetweenNodesCoeff))
 
       // process the node selection
-      let node = vis.selectAll('g.node').data(nodes, d => d.id || (d.id = ++nodeIndex))
+      let node = vis.selectAll('g.node')
+        .property("__oldData__", d => d)
+        .data(nodes, d => d.id || (d.id = ++nodeIndex))
 
       let nodeEnter = node.enter().append('g')
         .attr({
@@ -239,6 +241,17 @@ export default function(DOMNode, options = {}) {
       nodeUpdate.select('text')
         .style('fill-opacity', 1)
 
+      // blink updated nodes
+      nodeUpdate.filter(function(d) {
+        // test whether the relevant properties of d match
+        // the equivalent property of the oldData
+        // also test whether the old data exists,
+        // to catch the entering elements!
+        return (!this.__oldData__ || d.value !== this.__oldData__.value)
+      })
+        .style('fill-opacity', '0.3').transition()
+        .duration(100).style('fill-opacity', '1')
+
       // transition exiting nodes to the parent's new position
       let nodeExit = node.exit().transition()
         .duration(transitionDuration)
@@ -297,6 +310,9 @@ export default function(DOMNode, options = {}) {
           }
         })
         .remove()
+
+      // delete the old data once it's no longer needed
+      node.property("__oldData__", null)
 
       // stash the old positions for transition
       nodes.forEach(d => {
