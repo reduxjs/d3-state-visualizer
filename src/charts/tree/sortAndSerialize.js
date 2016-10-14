@@ -1,5 +1,4 @@
 import { is } from 'ramda'
-import fclone from 'fclone';
 
 function sortObject(obj, strict) {
   if (obj instanceof Array) {
@@ -22,5 +21,5 @@ function sortObject(obj, strict) {
 }
 
 export default function sortAndSerialize(obj) {
-  return JSON.stringify(sortObject(fclone(obj), true), undefined, 2)
+  return JSON.stringify(sortObject(obj, true), undefined, 2)
 }
