@@ -155,7 +155,7 @@ export default function(DOMNode, options = {}) {
 
       // process the node selection
       let node = vis.selectAll('g.node')
-        .property("__oldData__", d => d)
+        .property('__oldData__', d => d)
         .data(nodes, d => d.id || (d.id = ++nodeIndex))
 
       let nodeEnter = node.enter().append('g')
@@ -240,12 +240,12 @@ export default function(DOMNode, options = {}) {
       // fade the text in
       nodeUpdate.select('text')
         .style('fill-opacity', 1)
-      
+
       // restore the circle
       nodeUpdate.select('circle').attr('r', 7)
 
       // blink updated nodes
-      nodeUpdate.filter(function(d) {
+      nodeUpdate.filter(d => {
         // test whether the relevant properties of d match
         // the equivalent property of the oldData
         // also test whether the old data exists,
@@ -315,7 +315,7 @@ export default function(DOMNode, options = {}) {
         .remove()
 
       // delete the old data once it's no longer needed
-      node.property("__oldData__", null)
+      node.property('__oldData__', null)
 
       // stash the old positions for transition
       nodes.forEach(d => {

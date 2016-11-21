@@ -1,4 +1,3 @@
-import pretty from 'json-pretty';
 import { is, join, pipe, replace } from 'ramda';
 import sortAndSerialize from './sortAndSerialize';
 
@@ -81,6 +80,6 @@ export function getTooltipString(node, i, { indentationSize = 4 }) {
 
   if (typeof node.value !== 'undefined') return json2html(node.value);
   if (typeof node.object !== 'undefined') return json2html(node.object);
-  if (children && children.length) return 'childrenCount: ' +  children.length;
+  if (children && children.length) return 'childrenCount: ' + children.length;
   return 'empty';
 }
