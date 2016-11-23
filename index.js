@@ -1,6 +1,7 @@
 import React from 'react';
-import visualizer from 'd3-state-visualizer';
+import ReactDOM from 'react-dom';
 import ChartContainer from './components/ChartContainer';
+import TreeChart from './components/TreeChart';
 
 const appState = {
   todoStore: {
@@ -21,8 +22,6 @@ const appState = {
     }
   }
 };
-
-const { components: { TreeChart }} = visualizer;
 
 const style = {
   border: '1px solid black',
@@ -46,7 +45,7 @@ const tooltipOptions = {
   }
 }
 
-React.render(
+ReactDOM.render(
   <div>
     <ChartContainer appState={appState} >
       <TreeChart
