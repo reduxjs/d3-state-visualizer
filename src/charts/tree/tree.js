@@ -245,7 +245,7 @@ export default function(DOMNode, options = {}) {
       nodeUpdate.select('circle').attr('r', 7)
 
       // blink updated nodes
-      nodeUpdate.filter(d => {
+      nodeUpdate.filter(function flick(d) {
         // test whether the relevant properties of d match
         // the equivalent property of the oldData
         // also test whether the old data exists,
