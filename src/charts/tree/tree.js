@@ -18,7 +18,7 @@ const defaultOptions = {
         collapsed: 'lightsteelblue',
         parent: 'white'
       },
-      radius: 5
+      radius: 7
     },
     text: {
       colors: {
@@ -44,6 +44,7 @@ const defaultOptions = {
   heightBetweenNodesCoeff: 2,
   widthBetweenNodesCoeff: 1,
   transitionDuration: 750,
+  blinkDuration: 100,
   onClickText: () => {},
   tooltipOptions: {
     disabled: false,
@@ -69,6 +70,7 @@ export default function(DOMNode, options = {}) {
     widthBetweenNodesCoeff,
     heightBetweenNodesCoeff,
     transitionDuration,
+    blinkDuration,
     state,
     rootKeyName,
     pushMethod,
@@ -119,6 +121,34 @@ export default function(DOMNode, options = {}) {
     layout.sort((a, b) => b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1)
   }
 
+  // previousNodePositionsById stores node x and y
+  // as well as hierarchy (id / parentId);
+  // helps animating transitions
+  let previousNodePositionsById = {
+    root: {
+      id: 'root',
+      parentId: null,
+      x: height / 2,
+      y: 0
+    }
+  }
+
+  // traverses a map with node positions by going through the chain
+  // of parent ids; once a parent that matches the given filter is found,
+  // the parent position gets returned
+  function findParentNodePosition(nodePositionsById, nodeId, filter) {
+    let currentPosition = nodePositionsById[nodeId]
+    while (currentPosition) {
+      currentPosition = nodePositionsById[currentPosition.parentId]
+      if (!currentPosition) {
+        return null
+      }
+      if (!filter || filter(currentPosition)) {
+        return currentPosition
+      }
+    }
+  }
+
   return function renderChart(nextState = tree || state) {
     data = !tree ? map2tree(nextState, {key: rootKeyName, pushMethod}) : nextState
 
@@ -129,18 +159,25 @@ export default function(DOMNode, options = {}) {
     let nodeIndex = 0
     let maxLabelLength = 0
 
+    // nodes are assigned with string ids, which reflect their location
+    // within the hierarcy; e.g. "root|branch|subBranch|subBranch[0]|property"
+    // top-level elemnt always has id "root"
     visit(data,
-        node => maxLabelLength = Math.max(node.name.length, maxLabelLength),
-        node => node.children && node.children.length > 0 ? node.children : null
+        node => {
+          maxLabelLength = Math.max(node.name.length, maxLabelLength)
+          node.id = node.id || 'root'
+        },
+        node => node.children && node.children.length > 0 ? node.children.map((c) => {
+          c.id = `${node.id || ''}|${c.name}`
+          return c
+        }) : null
     )
 
-    data.x0 = height / 2
-    data.y0 = 0
     /*eslint-disable*/
-    update(data)
+    update()
     /*eslint-enable*/
 
-    function update(source) {
+    function update() {
       // path generator for links
       const diagonal = d3.svg.diagonal().projection(d => [d.y, d.x])
       // set tree dimensions and spacing between branches and nodes
@@ -153,27 +190,39 @@ export default function(DOMNode, options = {}) {
 
       nodes.forEach(node => node.y = node.depth * (maxLabelLength * 7 * widthBetweenNodesCoeff))
 
+      const nodePositions = nodes.map(n => ({
+        parentId: n.parent && n.parent.id,
+        id: n.id,
+        x: n.x,
+        y: n.y
+      }))
+      const nodePositionsById = {}
+      nodePositions.forEach(node => nodePositionsById[node.id] = node)
+
       // process the node selection
       let node = vis.selectAll('g.node')
         .property('__oldData__', d => d)
         .data(nodes, d => d.id || (d.id = ++nodeIndex))
-
       let nodeEnter = node.enter().append('g')
         .attr({
           'class': 'node',
-          transform: d => `translate(${source.y0},${source.x0})`
+          transform: d => {
+            const position = findParentNodePosition(nodePositionsById, d.id, (n) => previousNodePositionsById[n.id])
+            const previousPosition = position && previousNodePositionsById[position.id] || previousNodePositionsById.root
+            return `translate(${previousPosition.y},${previousPosition.x})`
+          }
         })
         .style({
           fill: style.text.colors.default,
           cursor: 'pointer'
         })
         .on({
-          mouseover: function mouseover(d, i) {
+          mouseover: function mouseover() {
             d3.select(this).style({
               fill: style.text.colors.hover
             })
           },
-          mouseout: function mouseout(d, i) {
+          mouseout: function mouseout() {
             d3.select(this).style({
               fill: style.text.colors.default
             })
@@ -187,20 +236,27 @@ export default function(DOMNode, options = {}) {
         )
       }
 
-      nodeEnter.append('circle')
+      // g inside node contains circle and text
+      // this extra wrapper helps run d3 transitions in parallel
+      const nodeEnterInnerGroup = nodeEnter.append('g')
+      nodeEnterInnerGroup.append('circle')
         .attr({
-          'class': 'nodeCircle'
+          'class': 'nodeCircle',
+          r: 0
         })
         .on({
           click: clickedNode => {
             if (d3.event.defaultPrevented) return
-            update(toggleChildren(clickedNode))
+            toggleChildren(clickedNode)
+            update()
           }
         })
 
-      nodeEnter.append('text')
+      nodeEnterInnerGroup.append('text')
         .attr({
           'class': 'nodeText',
+          'text-anchor': 'middle',
+          'transform': `translate(0,0)`,
           dy: '.35em'
         })
         .style({
@@ -213,17 +269,10 @@ export default function(DOMNode, options = {}) {
 
       // update the text to reflect whether node has children or not
       node.select('text')
-        .attr({
-          x: d => d.children || d._children ? -(style.node.radius + 10) : style.node.radius + 10,
-          'text-anchor': d => d.children || d._children ? 'end' : 'start'
-        })
         .text(d => d.name)
 
       // change the circle fill depending on whether it has children and is collapsed
-      node.select('circle.nodeCircle')
-        .attr({
-          r: style.node.radius
-        })
+      node.select('circle')
         .style({
           stroke: 'black',
           'stroke-width': '1.5px',
@@ -237,29 +286,41 @@ export default function(DOMNode, options = {}) {
           transform: d => `translate(${d.y},${d.x})`
         })
 
-      // fade the text in
+      // ensure circle radius is correct
+      nodeUpdate.select('circle')
+        .attr('r', style.node.radius)
+
+      // fade the text in and align it
       nodeUpdate.select('text')
         .style('fill-opacity', 1)
-
-      // restore the circle
-      nodeUpdate.select('circle').attr('r', 7)
+        .attr({
+          transform: function transform(d) {
+            const x = (d.children || d._children ? -1 : 1) * (this.getBBox().width / 2 + style.node.radius + 5)
+            return `translate(${x},0)`
+          }
+        })
 
       // blink updated nodes
-      nodeUpdate.filter(function flick(d) {
+      node.filter(function flick(d) {
         // test whether the relevant properties of d match
         // the equivalent property of the oldData
         // also test whether the old data exists,
         // to catch the entering elements!
-        return (!this.__oldData__ || d.value !== this.__oldData__.value)
+        return (this.__oldData__ && d.value !== this.__oldData__.value)
       })
-        .style('fill-opacity', '0.3').transition()
-        .duration(100).style('fill-opacity', '1')
+        .select('g')
+        .style('opacity', '0.3').transition()
+        .duration(blinkDuration).style('opacity', '1')
 
       // transition exiting nodes to the parent's new position
       let nodeExit = node.exit().transition()
         .duration(transitionDuration)
         .attr({
-          transform: d => `translate(${source.y},${source.x})`
+          transform: d => {
+            const position = findParentNodePosition(previousNodePositionsById, d.id, (n) => nodePositionsById[n.id])
+            const futurePosition = position && nodePositionsById[position.id] || nodePositionsById.root
+            return `translate(${futurePosition.y},${futurePosition.x})`
+          }
         })
         .remove()
 
@@ -278,13 +339,11 @@ export default function(DOMNode, options = {}) {
         .attr({
           'class': 'link',
           d: d => {
-            let o = {
-              x: source.x0,
-              y: source.y0
-            }
+            const position = findParentNodePosition(nodePositionsById, d.target.id, (n) => previousNodePositionsById[n.id])
+            const previousPosition = position && previousNodePositionsById[position.id] || previousNodePositionsById.root
             return diagonal({
-              source: o,
-              target: o
+              source: previousPosition,
+              target: previousPosition
             })
           }
         })
@@ -298,17 +357,16 @@ export default function(DOMNode, options = {}) {
         })
 
       // transition exiting nodes to the parent's new position
-      link.exit().transition()
+      link.exit()
+        .transition()
         .duration(transitionDuration)
         .attr({
           d: d => {
-            let o = {
-              x: source.x,
-              y: source.y
-            }
+            const position = findParentNodePosition(previousNodePositionsById, d.target.id, (n) => nodePositionsById[n.id])
+            const futurePosition = position && nodePositionsById[position.id] || nodePositionsById.root
             return diagonal({
-              source: o,
-              target: o
+              source: futurePosition,
+              target: futurePosition
             })
           }
         })
@@ -318,10 +376,7 @@ export default function(DOMNode, options = {}) {
       node.property('__oldData__', null)
 
       // stash the old positions for transition
-      nodes.forEach(d => {
-        d.x0 = d.x
-        d.y0 = d.y
-      })
+      previousNodePositionsById = nodePositionsById
     }
   }
 }
