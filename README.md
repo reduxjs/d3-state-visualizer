@@ -2,7 +2,7 @@ d3-state-visualizer
 ===================
 Enables real-time visualization of your application state.
 
-[Demo](http://romseguy.github.io/d3-state-visualizer)
+[Demo](http://reduxjs.github.io/d3-state-visualizer)
 
 ## Installation
 
