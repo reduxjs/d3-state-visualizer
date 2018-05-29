@@ -1,5 +1,5 @@
 import d3 from 'd3'
-import { isEmpty } from 'ramda'
+import { isEmpty, isNil } from 'ramda'
 import map2tree from 'map2tree'
 import deepmerge from 'deepmerge'
 import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } from './utils'
@@ -16,7 +16,11 @@ const defaultOptions = {
       colors: {
         'default': '#ccc',
         collapsed: 'lightsteelblue',
-        parent: 'white'
+        parent: 'white',
+      },
+      opacity: {
+        'default': 1.0,
+        empty: 1.0
       },
       radius: 7
     },
@@ -24,6 +28,10 @@ const defaultOptions = {
       colors: {
         'default': 'black',
         hover: 'skyblue'
+      },
+      opacity: {
+        'default': 1.0,
+        empty: 1.0
       }
     },
     link: {
@@ -188,7 +196,10 @@ export default function(DOMNode, options = {}) {
       let nodes = layout.nodes(data)
       let links = layout.links(nodes)
 
-      nodes.forEach(node => node.y = node.depth * (maxLabelLength * 7 * widthBetweenNodesCoeff))
+      nodes.forEach(node => {
+        node.y = node.depth * (maxLabelLength * 7 * widthBetweenNodesCoeff)
+        node.isEmpty = !node.children && (isEmpty(node.value) || isNil(node.value) || node.value === false);
+      })
 
       const nodePositions = nodes.map(n => ({
         parentId: n.parent && n.parent.id,
@@ -275,6 +286,7 @@ export default function(DOMNode, options = {}) {
       node.select('circle')
         .style({
           stroke: 'black',
+          opacity: d => d.isEmpty ? style.node.opacity.empty : style.node.opacity.default,
           'stroke-width': '1.5px',
           fill: d => d._children ? style.node.colors.collapsed : (d.children ? style.node.colors.parent : style.node.colors.default)
         })
@@ -292,7 +304,10 @@ export default function(DOMNode, options = {}) {
 
       // fade the text in and align it
       nodeUpdate.select('text')
-        .style('fill-opacity', 1)
+        .style({
+          'fill-opacity': 1,
+          opacity: d => d.isEmpty ? style.text.opacity.empty : style.text.opacity.default
+        })
         .attr({
           transform: function transform(d) {
             const x = (d.children || d._children ? -1 : 1) * (this.getBBox().width / 2 + style.node.radius + 5)
