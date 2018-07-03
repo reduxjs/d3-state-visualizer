@@ -1,4 +1,5 @@
 import { is, join, pipe, replace } from 'ramda';
+import { isEmpty, isNil } from 'ramda'
 import sortAndSerialize from './sortAndSerialize';
 
 export function collapseChildren(node) {
@@ -82,4 +83,10 @@ export function getTooltipString(node, i, { indentationSize = 4 }) {
   if (typeof node.object !== 'undefined') return json2html(node.object);
   if (children && children.length) return 'childrenCount: ' + children.length;
   return 'empty';
+}
+
+export function isNodeFalsey({ children, value, object }) {
+  return !children &&
+    (isEmpty(value) || isNil(value) || value === false) &&
+    (isEmpty(object) || isNil(object));
 }
