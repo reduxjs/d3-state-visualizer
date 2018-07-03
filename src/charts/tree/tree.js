@@ -1,9 +1,12 @@
 import d3 from 'd3'
-import { isEmpty, isNil } from 'ramda'
+import { isEmpty } from 'ramda'
 import map2tree from 'map2tree'
 import deepmerge from 'deepmerge'
-import { getTooltipString, toggleChildren, visit, getNodeGroupByDepthCount } from './utils'
 import d3tooltip from 'd3tooltip'
+import {
+  getTooltipString, toggleChildren, visit,
+  getNodeGroupByDepthCount, isNodeFalsey
+} from './utils'
 
 const defaultOptions = {
   state: undefined,
@@ -16,11 +19,11 @@ const defaultOptions = {
       colors: {
         'default': '#ccc',
         collapsed: 'lightsteelblue',
-        parent: 'white',
+        parent: 'white'
       },
       opacity: {
         'default': 1.0,
-        empty: 1.0
+        empty: 0.75
       },
       radius: 7
     },
@@ -31,7 +34,7 @@ const defaultOptions = {
       },
       opacity: {
         'default': 1.0,
-        empty: 1.0
+        empty: 0.75
       }
     },
     link: {
@@ -198,7 +201,7 @@ export default function(DOMNode, options = {}) {
 
       nodes.forEach(node => {
         node.y = node.depth * (maxLabelLength * 7 * widthBetweenNodesCoeff)
-        node.isEmpty = !node.children && (isEmpty(node.value) || isNil(node.value) || node.value === false);
+        node.isEmpty = isNodeFalsey(node);
       })
 
       const nodePositions = nodes.map(n => ({
