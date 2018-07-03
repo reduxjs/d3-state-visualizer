@@ -77,7 +77,8 @@ style: {
     colors: {
       'default': '#ccc',
       collapsed: 'lightsteelblue',
-      parent: 'white'
+      parent: 'white',
+      changed: '#c44'
     },
     opacity: {
       'default': 1.0,
@@ -88,7 +89,8 @@ style: {
   text: {
     colors: {
       'default': 'black',
-      hover: 'skyblue'
+      hover: 'skyblue',
+      changed: '#c44'
     },
     opacity: {
       'default': 1.0,
@@ -105,8 +107,11 @@ style: {
 #### Special element types
 - `parent`: fill color for parent nodes
 - `collapsed`: fill color for nodeds collapsed by the user
+- `changed`: fill and text color for state poperties that have mutated since most recent state change
 - `empty`: opacity for Falsey values (besides 0), helps data of interest stand out
 - `hover`: highlighted color of text when hovering to view a tooltip
+
+Using unique styles for empty and changed nodes clarifies activity and nodes of interest for large state trees.
 
 More to come...
 
