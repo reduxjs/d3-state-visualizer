@@ -5,7 +5,8 @@ import deepmerge from 'deepmerge'
 import d3tooltip from 'd3tooltip'
 import {
   getTooltipString, toggleChildren, visit,
-  getNodeGroupByDepthCount, isNodeFalsey
+  getNodeGroupByDepthCount, isNodeFalsey,
+  getDiffMap, getFlatPath
 } from './utils'
 
 const defaultOptions = {
@@ -19,7 +20,8 @@ const defaultOptions = {
       colors: {
         'default': '#ccc',
         collapsed: 'lightsteelblue',
-        parent: 'white'
+        parent: 'white',
+        changed: '#c44'
       },
       opacity: {
         'default': 1.0,
@@ -30,7 +32,8 @@ const defaultOptions = {
     text: {
       colors: {
         'default': 'black',
-        hover: 'skyblue'
+        hover: 'skyblue',
+        changed: '#c44'
       },
       opacity: {
         'default': 1.0,
@@ -160,7 +163,8 @@ export default function(DOMNode, options = {}) {
     }
   }
 
-  return function renderChart(nextState = tree || state) {
+  return function renderChart(nextState = tree || state, meta = {}) {
+    const diffMap = getDiffMap(meta.diffedStates || []);
     data = !tree ? map2tree(nextState, {key: rootKeyName, pushMethod}) : nextState
 
     if (isEmpty(data) || !data.name) {
@@ -202,6 +206,8 @@ export default function(DOMNode, options = {}) {
       nodes.forEach(node => {
         node.y = node.depth * (maxLabelLength * 7 * widthBetweenNodesCoeff)
         node.isEmpty = isNodeFalsey(node);
+        node.flatPath = getFlatPath(node);
+        node.isChanged = diffMap && diffMap[node.flatPath];
       })
 
       const nodePositions = nodes.map(n => ({
@@ -227,7 +233,7 @@ export default function(DOMNode, options = {}) {
           }
         })
         .style({
-          fill: style.text.colors.default,
+          fill: d => d.isChanged ? style.node.colors.changed : style.node.colors.default,
           cursor: 'pointer'
         })
         .on({
@@ -238,7 +244,7 @@ export default function(DOMNode, options = {}) {
           },
           mouseout: function mouseout() {
             d3.select(this).style({
-              fill: style.text.colors.default
+              fill: d => d.isChanged ? style.node.colors.changed : style.node.colors.default
             })
           }
         })
@@ -257,6 +263,9 @@ export default function(DOMNode, options = {}) {
         .attr({
           'class': 'nodeCircle',
           r: 0
+        })
+        .style({
+          color: d => d.isChanged ? style.node.colors.changed : style.node.colors.default
         })
         .on({
           click: clickedNode => {
@@ -285,13 +294,18 @@ export default function(DOMNode, options = {}) {
       node.select('text')
         .text(d => d.name)
 
-      // change the circle fill depending on whether it has children and is collapsed
+      // change the circle fill depending on whether it has changed, has children and is collapsed
       node.select('circle')
         .style({
           stroke: 'black',
           opacity: d => d.isEmpty ? style.node.opacity.empty : style.node.opacity.default,
           'stroke-width': '1.5px',
-          fill: d => d._children ? style.node.colors.collapsed : (d.children ? style.node.colors.parent : style.node.colors.default)
+          fill: d => (
+            d.isChanged ? style.node.colors.changed : (
+              d._children ? style.node.colors.collapsed :
+              (d.children ? style.node.colors.parent : style.node.colors.default)
+            )
+          )
         })
 
       // transition nodes to their new position
@@ -309,7 +323,8 @@ export default function(DOMNode, options = {}) {
       nodeUpdate.select('text')
         .style({
           'fill-opacity': 1,
-          opacity: d => d.isEmpty ? style.text.opacity.empty : style.text.opacity.default
+          opacity: d => d.isEmpty && !d.isChanged ? style.text.opacity.empty : style.text.opacity.default,
+          fill: d => d.isChanged ? style.text.colors.changed : style.text.colors.default
         })
         .attr({
           transform: function transform(d) {

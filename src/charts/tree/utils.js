@@ -90,3 +90,24 @@ export function isNodeFalsey({ children, value, object }) {
     (isEmpty(value) || isNil(value) || value === false) &&
     (isEmpty(object) || isNil(object));
 }
+
+export function getFlatPath(node) {
+  let currParent = node.parent
+  let flatPath = node.name
+  // we don't want the base 'state' object included
+  while (currParent && currParent.depth > 0) {
+    flatPath = `${currParent.name}.${flatPath}`
+    currParent = currParent.parent
+  }
+  return flatPath;
+}
+
+export function getDiffMap(diffs) {
+  const diffMap = {};
+  [].concat(diffs).forEach(diff => {
+    if (diff.path) {
+      diffMap[diff.path.join('.')] = diff;
+    }
+  });
+  return diffMap;
+}
