@@ -164,7 +164,7 @@ export default function(DOMNode, options = {}) {
   }
 
   return function renderChart(nextState = tree || state, meta = {}) {
-    const diffMap = getDiffMap(meta.diffedStates || []);
+    const diffMap = meta.diffedStates && getDiffMap(meta.diffedStates);
     data = !tree ? map2tree(nextState, {key: rootKeyName, pushMethod}) : nextState
 
     if (isEmpty(data) || !data.name) {
