@@ -24,7 +24,7 @@
   "dependencies": {
     "d3-state-visualizer": "^1.0.1",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0",
+    "react-dom": "^16.0.1",
     "react2tree": "^1.2.0"
   },
   "devDependencies": {
