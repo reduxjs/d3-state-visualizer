@@ -1,5 +1,8 @@
 d3-state-visualizer
 ===================
+
+**This package was merged into the [`redux-devtools`](https://github.com/reduxjs/redux-devtools) monorepo. Please refer to that repository for the latest updates, issues and pull requests.**
+
 Enables real-time visualization of your application state.
 
 [Demo](http://reduxjs.github.io/d3-state-visualizer)
