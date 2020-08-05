@@ -60,7 +60,7 @@ Other options are listed below and have reasonable default values if you want to
 Option                    | Type     | Default     | Description
 --------------------------|----------|-------------|-------------------------------------------------------------------------
 `id`                      | String   | `'d3svg'`   | Sets the identifier of the SVG element —i.e your chart— that will be added to the DOM element you passed as first argument
-`style`                   | Object   | `{}`        | Sets the CSS style of the chart
+`style`                   | Object   | `{}`        | Sets specific CSS properties of the chart (see below) 
 `size`                    | Number   | `500`       | Sets size of the chart in pixels
 `aspectRatio`             | Float    | `1.0`       | Sets the chart height to `size * aspectRatio` and [viewBox](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox) in order to preserve the aspect ratio of the chart. [Great video](https://www.youtube.com/watch?v=FCOeMy7HrBc) if you want to learn more about how SVG works
 `widthBetweenNodesCoeff`  | Float    | `1.0`       | Alters the horizontal space between each node
@@ -71,7 +71,53 @@ Option                    | Type     | Default     | Description
 `rootKeyName`             | String   | `'state'`   | Sets the first node's name of the resulting tree structure. **Warning**: only works if you provide a `state` option
 `pushMethod`              | String   | `'push'`    | Sets the method that shall be used to add array children to the tree. **Warning**: only works if you provide a `state` option
 
+
+The following default styles are customizeable with the style option:
+
+```javascript
+style: {
+  node: {
+    colors: {
+      'default': '#ccc',
+      collapsed: 'lightsteelblue',
+      parent: 'white',
+      changed: '#c44'
+    },
+    opacity: {
+      'default': 1.0,
+      empty: 0.75
+    },
+    radius: 7
+  },
+  text: {
+    colors: {
+      'default': 'black',
+      hover: 'skyblue',
+      changed: '#c44'
+    },
+    opacity: {
+      'default': 1.0,
+      empty: 0.75
+    }
+  },
+  link: {
+    stroke: '#000',
+    fill: 'none'
+  }
+};
+
+```
+#### Special element types
+- `parent`: fill color for parent nodes
+- `collapsed`: fill color for nodeds collapsed by the user
+- `changed`: fill and text color for state poperties that have mutated since most recent state change
+- `empty`: opacity for Falsey values (besides 0), helps data of interest stand out
+- `hover`: highlighted color of text when hovering to view a tooltip
+
+Using unique styles for empty and changed nodes clarifies activity and nodes of interest for large state trees.
+
 More to come...
+
 
 ## Bindings
 
